@@ -1,6 +1,18 @@
 {
   "..\\contexts\\WalletContext.tsx -> ../src/lib/api": {
-    "id": "..\\contexts\\WalletContext.tsx -> ../src/lib/api",
+    "id": 2138,
     "files": []
+  },
+  "..\\node_modules\\@sanity\\client\\dist\\index.browser.js -> ./_chunks-es/stegaEncodeSourceMap.js": {
+    "id": 4235,
+    "files": [
+      "static/chunks/235.f9fa15e44adb79d1.js"
+    ]
+  },
+  "..\\node_modules\\@sanity\\client\\dist\\index.browser.js -> @sanity/eventsource": {
+    "id": 3699,
+    "files": [
+      "static/chunks/699.19e9b75467b8d79b.js"
+    ]
   }
 }

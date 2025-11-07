@@ -16,7 +16,7 @@ export default function Settings(){
     }
     return 'tr';
   });
-  const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [referralCode, setReferralCode] = useState(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 

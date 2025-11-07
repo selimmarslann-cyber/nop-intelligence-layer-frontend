@@ -1,6 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/": "pages/index.js"
-}
+{"/_app":"pages/_app.js","/_error":"pages/_error.js","/New":"pages/New.html","/Notifications":"pages/Notifications.html","/Scores":"pages/Scores.html","/Settings":"pages/Settings.html","/Wallet":"pages/Wallet.html","/admin/ai-monitor":"pages/admin/ai-monitor.html","/admin/burns":"pages/admin/burns.html","/admin/events":"pages/admin/events.html","/admin/contributions":"pages/admin/contributions.html","/admin/health":"pages/admin/health.html","/admin/login":"pages/admin/login.html","/admin/users":"pages/admin/users.html","/admin/withdrawals":"pages/admin/withdrawals.html","/admin/withdraws":"pages/admin/withdraws.html","/contribution/[postId]":"pages/contribution/[postId].html","/admin":"pages/admin.html","/":"pages/index.html","/profile/[slug]":"pages/profile/[slug].html","/explore":"pages/explore.js","/_document":"pages/_document.js","/404":"pages/404.html"}
