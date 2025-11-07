@@ -1,0 +1,99 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")   // ör: file:./dev.db
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 Int       @id @default(autoincrement())
+  address            String    @unique
+  balance            BigInt    @default(0)    // site içi NOP puan
+  staked             BigInt    @default(0)    // staked puan
+  rewards            BigInt    @default(0)    // birikmiş ödül (puan)
+  rewardPerTokenPaid BigInt    @default(0)    // 1e18 ölçekli akümülatör
+  score              Int       @default(0)    // kullanıcı skoru
+  referralCode       String?   @unique        // Kullanıcının kendi referans kodu
+  referredBy         Int?                     // Bu kullanıcıyı referans eden kullanıcının ID'si
+  referralRewardClaimed Boolean @default(false) // Referans görevi ödülü alındı mı?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  withdrawals        Withdrawal[]
+  posts              Post[]
+  follows            Follow[]  @relation("Follower")
+  votes              Vote[]
+}
+
+model Global {
+  // tek satır tutacağız (id=1)
+  id                 Int      @id @default(1)
+  rewardPerToken     BigInt   @default(0)     // 1e18 ölçekli global akümülatör
+  lastUpdateTime     BigInt   @default(0)     // epoch seconds
+  totalStaked        BigInt   @default(0)     // toplam staked puan
+}
+
+model Withdrawal {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  amount     BigInt   // points
+  fee        BigInt   // points
+  netAmount  BigInt   // points
+  txHash     String?
+  status     String   @default("pending") // pending|processing|done|failed
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Post {
+  id         String   @id @default(cuid())
+  authorId   Int
+  author     User     @relation(fields: [authorId], references: [id])
+
+  title      String   @default("")   // kısa başlık opsiyonel, boş da olabilir
+  body       String                // 400 char limit FE/BE'de kontrol ediyoruz
+  tags       String   @default("[]") // JSON array string
+
+  mediaUrls  String   @default("[]")  // JSON array string - görsel link(leri)
+  upvotes    Int      @default(0)
+  comments   Int      @default(0)
+
+  // Ortalama skor cache'i (oylardan hesaplanır, FE'de gösteriyoruz)
+  avgScore   Float?   @default(0)
+  voteCount  Int      @default(0)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  votes      Vote[]
+}
+
+model Vote {
+  id         Int      @id @default(autoincrement())
+  postId     String
+  voterId    Int      // User ID who voted
+  value      Int      // 1-10 rating
+  createdAt  DateTime @default(now())
+
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  voter      User     @relation(fields: [voterId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, voterId])
+  @@index([postId])
+  @@index([voterId])
+}
+
+model Follow {
+  id              Int      @id @default(autoincrement())
+  followerId      Int
+  followingAddress String  // Takip edilen kullanıcının address'i
+  createdAt        DateTime @default(now())
+
+  follower        User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingAddress])
+  @@index([followerId])
+  @@index([followingAddress])
+}

@@ -1,0 +1,7 @@
+New-Item -ItemType Directory "$env:USERPROFILE\.open-interpreter" -Force | Out-Null
+@"
+{
+  "model": "groq/llama3-70b-8192",
+  "api_base": "https://api.groq.com/openai/v1"
+}
+"@ | Out-File -Encoding utf8 "$env:USERPROFILE\.open-interpreter\config.json"

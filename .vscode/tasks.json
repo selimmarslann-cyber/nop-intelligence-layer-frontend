@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "install:frontend", "type": "shell", "command": "npm i --legacy-peer-deps" },
+    {
+      "label": "install:backend",
+      "type": "shell",
+      "command": "npm i",
+      "options": { "cwd": "nop-intelligence-layer/backend" }
+    },
+    {
+      "label": "db:generate",
+      "type": "shell",
+      "command": "npx prisma generate",
+      "options": { "cwd": "nop-intelligence-layer/backend" }
+    },
+    {
+      "label": "db:push",
+      "type": "shell",
+      "command": "npx prisma db push",
+      "options": { "cwd": "nop-intelligence-layer/backend" }
+    },
+    {
+      "label": "dev:frontend",
+      "type": "shell",
+      "command": "npm run dev"
+    },
+    {
+      "label": "dev:backend",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "nop-intelligence-layer/backend" }
+    },
+    { "label": "dev:all", "dependsOn": ["dev:backend", "dev:frontend"], "dependsOrder": "parallel" }
+  ]
+}
