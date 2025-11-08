@@ -28,6 +28,18 @@ export default function FollowButton({
 
   const FOLLOW_COST = 50000; // 50,000 NOP
 
+  const parseBalanceValue = (value: unknown) => {
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : 0;
+    }
+    if (typeof value === "string") {
+      const normalized = value.replace(/[^0-9.-]/g, "");
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+    return 0;
+  };
+
   // Check follow status
   useEffect(() => {
     if (!currentUserAddress || !targetAddress) {
@@ -63,7 +75,7 @@ export default function FollowButton({
         const res = await fetch(`${getApiBase()}/api/users/${currentUserAddress}/summary`);
         if (res.ok) {
           const data = await res.json();
-          setBalance(parseInt(data.balance || "0", 10));
+          setBalance(parseBalanceValue(data.balance));
         }
       } catch (error) {
         console.error("Balance fetch error:", error);
@@ -71,44 +83,44 @@ export default function FollowButton({
     }
 
     fetchBalance();
-  }, [currentUserAddress]);
+    }, [currentUserAddress]);
 
-  const handleFollowClick = () => {
-    if (isFollowing) {
-      handleUnfollow();
-    } else {
-      setShowConfirm(true);
-    }
-  };
-
-  const handleConfirmFollow = async () => {
-    if (!currentUserAddress) return;
-
-    setLoading(true);
-    try {
-      const res = await fetch(`${getApiBase()}/api/follow/${targetAddress}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ followerAddress: currentUserAddress }),
-      });
-
-      const data = await res.json();
-
-      if (data.ok) {
-        setIsFollowing(true);
-        setShowConfirm(false);
-        setBalance(parseInt(data.newBalance || "0", 10));
-        onFollowChange?.(true);
+    const handleFollowClick = () => {
+      if (isFollowing) {
+        handleUnfollow();
       } else {
-        alert(data.error || "Takip işlemi başarısız");
+        setShowConfirm(true);
       }
-    } catch (error) {
-      console.error("Follow error:", error);
-      alert("Takip işlemi sırasında bir hata oluştu");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    const handleConfirmFollow = async () => {
+      if (!currentUserAddress) return;
+
+      setLoading(true);
+      try {
+        const res = await fetch(`${getApiBase()}/api/follow/${targetAddress}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ followerAddress: currentUserAddress }),
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+          setIsFollowing(true);
+          setShowConfirm(false);
+          setBalance(parseBalanceValue(data.newBalance));
+          onFollowChange?.(true);
+        } else {
+          alert(data.error || "Takip işlemi başarısız");
+        }
+      } catch (error) {
+        console.error("Follow error:", error);
+        alert("Takip işlemi sırasında bir hata oluştu");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const handleUnfollow = async () => {
     if (!currentUserAddress) return;
