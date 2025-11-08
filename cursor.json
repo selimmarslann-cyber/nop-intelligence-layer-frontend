@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "filesystem": "full",
+    "terminal": "full",
+    "network": "full",
+    "editor": "full",
+    "environment": "full"
+  },
+  "trusted": true
+}

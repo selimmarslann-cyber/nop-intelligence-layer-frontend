@@ -1,0 +1,34 @@
+﻿version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    env_file:
+      - ./nop-intelligence-layer/backend/.env
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${DB_NAME}"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./nop-intelligence-layer/backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./nop-intelligence-layer/backend/.env
+    environment:
+      DB_HOST: "db"
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    command: sh -lc "node -v && npm ci && npm run dev"
+
+volumes:
+  pgdata:

@@ -34,7 +34,10 @@ export default function Footer() {
           <h3 style={title}>Whitepaper</h3>
           <p style={p}>
             NOP Intelligence Layer’ın tokenomics, gelir modeli ve teknik mimari
-            detayları için <a href="/whitepaper.pdf" style={link}>Whitepaper’ı indir.</a>
+            detayları için{" "}
+            <a href="/api/whitepaper" style={link} target="_blank" rel="noopener noreferrer">
+              Whitepaper’ı görüntüle.
+            </a>
           </p>
         </div>
 

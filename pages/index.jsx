@@ -76,16 +76,7 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "280px 1fr 320px",
-          gap: 20,
-          maxWidth: 1320,
-          margin: "0 auto",
-          padding: "20px",
-        }}
-      >
+      <div className="home-grid">
         {/* Left Sidebar */}
         <aside>
           <Sidebar />
@@ -93,15 +84,12 @@ export default function HomePage() {
 
         {/* Main Feed */}
         <main>
+          <div className="home-mobile-contribute">
+            <ContributionComposer authorId={address || "anonymous"} />
+          </div>
+
           {/* Status Cards */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 12,
-              marginBottom: 16,
-            }}
-          >
+          <div className="home-status-cards">
             <div
               style={{
                 background: "#F8FAFC",

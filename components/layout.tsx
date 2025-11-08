@@ -1,144 +1,190 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import Footer from "./footer"; // ✅ footer dosyasını çağırıyoruz
 import BalancePill from "./BalancePill";
 import ConnectWalletButton from "./wallet/ConnectWalletButton";
 import MarketTicker from "./MarketTicker";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ minHeight: "100vh", background: "#fff", color: "#111" }}>
-      {/* ======= MARKET TICKER ======= */}
-      <MarketTicker />
-      
-      {/* ======= HEADER ======= */}
-      <header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-          backdropFilter: "saturate(180%) blur(10px)",
-          background: "rgba(255,255,255,.85)",
-          borderBottom: "1px solid #eee",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1320,
-            margin: "0 auto",
-            padding: "10px 20px",
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-          }}
-        >
-          <div style={{ fontWeight: 800, letterSpacing: 0.2 }}>NOP Intelligence Layer</div>
+type NavLink = {
+  label: string;
+  href: string;
+  icon: string;
+  match: string;
+};
 
-          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 8 }}>
-            <input
-              id="search-input"
-              placeholder="Ara (#AI, #Blockchain, yazar...)"
-              onFocus={(e) => {
-                e.currentTarget.style.outline = "2px solid #C9A227";
-                e.currentTarget.style.outlineOffset = "2px";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.outline = "none";
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  const input = e.currentTarget as HTMLInputElement;
-                  const query = input.value.trim();
+const NAV_LINKS: NavLink[] = [
+  { label: "Ana Sayfa", href: "/", icon: "🏠", match: "/" },
+  { label: "Katkı Yap", href: "/new", icon: "📝", match: "/new" },
+  { label: "Explore", href: "/explore", icon: "🔍", match: "/explore" },
+  { label: "Cüzdan", href: "/wallet", icon: "👛", match: "/wallet" },
+  { label: "Scores", href: "/scores", icon: "📊", match: "/scores" },
+  { label: "Profil", href: "/profile/me", icon: "👤", match: "/profile" },
+  { label: "Settings", href: "/settings", icon: "⚙️", match: "/settings" },
+];
+
+const lockBodyScroll = (lock: boolean) => {
+  if (typeof document === "undefined") {
+    return;
+  }
+  document.body.style.overflow = lock ? "hidden" : "";
+};
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    lockBodyScroll(mobileMenuOpen);
+    return () => lockBodyScroll(false);
+  }, [mobileMenuOpen]);
+
+  const currentPath = useMemo(() => {
+    const pathname = router?.pathname ?? "/";
+    return pathname.toLowerCase();
+  }, [router?.pathname]);
+
+  const isActive = (match: string) => {
+    if (match === "/") {
+      return currentPath === "/";
+    }
+    return currentPath.startsWith(match);
+  };
+
+  return (
+    <div className="layout-shell">
+      {/* ======= MARKET TICKER ======= */}
+      <div className="layout-market-ticker">
+        <MarketTicker />
+      </div>
+
+      {/* ======= HEADER ======= */}
+      <header className="layout-header">
+        <div className="layout-header__inner">
+          {/* Mobile header */}
+          <div className="layout-header__mobile">
+            <button
+              type="button"
+              className="layout-header__burger"
+              aria-label="Menüyü aç"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              ☰
+            </button>
+            <Link href="/" className="layout-header__brand">
+              NOP Intelligence Layer
+            </Link>
+            <div className="layout-header__mobile-actions">
+              <Link href="/notifications" className="layout-chip" aria-label="Bildirimler">
+                🔔
+              </Link>
+            </div>
+          </div>
+
+          {/* Desktop header */}
+          <div className="layout-header__desktop">
+            <div className="layout-header__brand">NOP Intelligence Layer</div>
+
+            <div className="layout-header__search">
+              <input
+                id="search-input"
+                placeholder="Ara (#AI, #Blockchain, yazar...)"
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = "2px solid #C9A227";
+                  e.currentTarget.style.outlineOffset = "2px";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = "none";
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const input = e.currentTarget as HTMLInputElement;
+                    const query = input.value.trim();
+                    if (query) {
+                      window.location.href = `/explore?q=${encodeURIComponent(query)}`;
+                    }
+                  }
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const input = document.getElementById("search-input") as HTMLInputElement | null;
+                  const query = input?.value.trim();
                   if (query) {
                     window.location.href = `/explore?q=${encodeURIComponent(query)}`;
                   }
-                }
-              }}
-              style={{
-                flex: 1,
-                height: 36,
-                padding: "0 12px",
-                border: "1px solid #E5E7EB",
-                borderRadius: 8,
-                outline: "none",
-              }}
-            />
-            <button
-              onClick={() => {
-                const input = document.getElementById("search-input") as HTMLInputElement;
-                const query = input?.value.trim();
-                if (query) {
-                  window.location.href = `/explore?q=${encodeURIComponent(query)}`;
-                }
-              }}
-              style={{
-                height: 36,
-                width: 36,
-                padding: 0,
-                border: "1px solid #E5E7EB",
-                borderRadius: 8,
-                background: "#F8FAFC",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 16,
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.outline = "2px solid #C9A227";
-                e.currentTarget.style.outlineOffset = "2px";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.outline = "none";
-              }}
-              title="Ara"
-            >
-              🔍
-            </button>
-          </div>
-          <button
-            onClick={() => {
-              // Open notifications page or modal
-              window.location.href = "/notifications";
-            }}
-            style={chip}
-            onFocus={(e) => {
-              e.currentTarget.style.outline = "2px solid #C9A227";
-              e.currentTarget.style.outlineOffset = "2px";
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.outline = "none";
-            }}
-            title="Bildirimler"
-            aria-label="Bildirimler"
-          >
-            🔔
-          </button>
-          <button
-            style={chip}
-            onFocus={(e) => {
-              e.currentTarget.style.outline = "2px solid #C9A227";
-              e.currentTarget.style.outlineOffset = "2px";
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.outline = "none";
-            }}
-          >
-            👤
-          </button>
-          
-          {/* Balance Pill & Connect Wallet - Top Right */}
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>
-            <ConnectWalletButton />
-            <BalancePill />
+                }}
+                title="Ara"
+                aria-label="Ara"
+              >
+                🔍
+              </button>
+            </div>
+
+            <div className="layout-header__actions">
+              <Link href="/notifications" className="layout-chip" aria-label="Bildirimler">
+                🔔
+              </Link>
+              <Link href="/profile/me" className="layout-chip" aria-label="Profil">
+                👤
+              </Link>
+              <div className="layout-desktop-only">
+                <ConnectWalletButton />
+              </div>
+              <div className="layout-desktop-only">
+                <BalancePill />
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
+      {/* Mobile menu drawer */}
+      <div className={`mobile-menu__overlay ${mobileMenuOpen ? "is-open" : ""}`}>
+        <div className="mobile-menu">
+          <div className="mobile-menu__header">
+            <span>Menü</span>
+            <button
+              type="button"
+              aria-label="Menüyü kapat"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              ✕
+            </button>
+          </div>
+
+          <nav className="mobile-menu__nav">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`mobile-menu__link ${isActive(link.match) ? "active" : ""}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="mobile-menu__icon">{link.icon}</span>
+                {link.label}
+              </Link>
+            ))}
+            <Link
+              href="/notifications"
+              className={`mobile-menu__link ${isActive("/notifications") ? "active" : ""}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="mobile-menu__icon">🔔</span>
+              Bildirimler
+            </Link>
+          </nav>
+
+          <div className="mobile-menu__cta">
+            <ConnectWalletButton />
+          </div>
+        </div>
+      </div>
+
       {/* ======= MAIN CONTENT ======= */}
-      <main style={{ maxWidth: 1320, margin: "0 auto", padding: "18px 20px" }}>
-        {children}
-      </main>
+      <main className="layout-main">{children}</main>
 
       {/* ======= FOOTER ======= */}
       <Footer />
