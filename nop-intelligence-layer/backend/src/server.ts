@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import 'dotenv/config';
 import type { FastifyInstance } from 'fastify';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
@@ -142,15 +141,13 @@ app.get('/api/ai/health', async (_, reply) => {
 
 app.post('/api/ai/chat', async (request, reply) => {
   const body = request.body as { messages?: ChatMessage[] };
-  const last = body?.messages?.findLast((m) => m.role === 'user');
-  const userText = last?.content ?? 'Yeni bir mesaj bulunamadı.';
+  const messages = Array.isArray(body?.messages) ? body.messages : [];
+  const lastUserMessage = [...messages].reverse().find((m: ChatMessage) => m.role === 'user');
+  const userText = lastUserMessage?.content ?? 'Yeni bir mesaj bulunamadı.';
 
   return reply.send({
     ok: true,
-    message: {
-      role: 'assistant',
-      content: `AI servisi devre dışı: Şu an için otomatik yanıt yerine bu mesajı iletmekteyiz. Kullanıcının son mesajı: "${userText}"`,
-    },
+    reply: `AI servisi devre dışı: Şu an için otomatik yanıt yerine bu mesajı iletmekteyiz. Kullanıcının son mesajı: "${userText}"`,
   });
 });
 

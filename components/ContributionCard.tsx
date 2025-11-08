@@ -29,10 +29,10 @@ interface ContributionCardProps {
 }
 
 function linkify(text: string) {
-  const url = /((https?:\/\/|www\.)[\w\-\.\/\?\=\#\&\%\+\,\:\;\~\@\!\*\(\)]+)/gi;
-  return text.split(url).map((part, i) => {
-    if (url.test(part)) {
-      const href = part.startsWith("http") ? part : "http://" + part;
+  const urlPattern = /^(https?:\/\/|www\.)[\w\-\.\/\?\=\#\&\%\+\,\:\;\~\@\!\*\(\)]+$/i;
+  return text.split(/(\s+)/).map((part, i) => {
+    if (urlPattern.test(part)) {
+      const href = part.startsWith("http") ? part : `http://${part}`;
       return (
         <a key={i} href={href} target="_blank" rel="noreferrer">
           {part}

@@ -1,7 +1,7 @@
 // components/wallet/StakePanel.jsx
+"use client";
 import { useState } from "react";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { getApiBase } from "../../src/lib/api";
 
 export default function StakePanel({ address, onChanged }) {
   const [amount, setAmount] = useState("");
@@ -9,10 +9,11 @@ export default function StakePanel({ address, onChanged }) {
   const [msg, setMsg] = useState("");
 
   async function post(path, body) {
-    const r = await fetch(`${API_BASE}${path}`, {
+    const apiBase = getApiBase();
+    const r = await fetch(`${apiBase}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
     if (!r.ok) throw new Error(await r.text());
     return await r.json();
