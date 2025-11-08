@@ -1,6 +1,7 @@
 // pages/wallet.jsx
 import { useEffect, useState } from "react";
 import Layout from "../components/layout";
+import Sidebar from "../components/Sidebar";
 import WalletHeader from "../components/wallet/WalletHeader";
 import BalanceCards from "../components/wallet/BalanceCards";
 import StakePanel from "../components/wallet/StakePanel";
@@ -99,12 +100,25 @@ export default function WalletPage() {
 
   return (
     <Layout>
-      <div style={{ background: "#fff", minHeight: "100vh", color: "#111" }}>
-        <WalletHeader address={address} onRefresh={() => { load(); loadWithdrawals(); }} />
+      <div
+        style={{
+          maxWidth: 1440,
+          margin: "0 auto",
+          padding: "24px 16px 40px",
+          display: "grid",
+          gap: 24,
+          gridTemplateColumns: "260px minmax(0, 1fr)",
+        }}
+      >
+        <aside>
+          <Sidebar active="wallet" />
+        </aside>
 
-        <div style={{ maxWidth: 1200, margin: "24px auto", padding: "0 16px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 16, marginBottom: 24 }}>
-            {/* SOL SÜTUN */}
+        <section style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <WalletHeader address={address} onRefresh={() => { load(); loadWithdrawals(); }} />
+
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(280px, 1fr)", gap: 16 }}>
+            {/* Sol sütun */}
             <div style={{ display: "grid", gap: 16 }}>
               <BalanceCards
                 loading={loading}
@@ -117,7 +131,7 @@ export default function WalletPage() {
               <StakePanel address={address || ""} onChanged={load} />
             </div>
 
-            {/* SAĞ SÜTUN – Deposit & Withdraw Buttons */}
+            {/* Sağ sütun – Deposit & Withdraw Buttons */}
             <div style={card}>
               <h3 style={h3}>Token İşlemleri</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 12 }}>
@@ -243,7 +257,7 @@ export default function WalletPage() {
               </div>
             )}
           </div>
-        </div>
+        </section>
       </div>
 
       {/* Modals */}
