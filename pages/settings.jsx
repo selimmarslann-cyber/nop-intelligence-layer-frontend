@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import Rightbar from '../components/Rightbar';
 import { useState, useEffect } from 'react';
 import { useWallet } from '../contexts/WalletContext';
-import { getApiBase } from '../src/lib/api';
+import { API_URL } from '../src/lib/api';
 
 export default function Settings(){
   const { address, isConnected } = useWallet();
@@ -36,7 +36,7 @@ export default function Settings(){
     if (!address) return;
     setLoading(true);
     try {
-      const r = await fetch(`${getApiBase()}/api/referral/code/${address}`);
+        const r = await fetch(`${API_URL}/api/referral/code/${address}`);
       if (r.ok) {
         const data = await r.json();
         setReferralCode(data.referralCode || null);

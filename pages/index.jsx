@@ -10,8 +10,7 @@ import { enhanceHomeUI } from "../src/lib/ui-enhancer";
 import { useWallet } from "../contexts/WalletContext";
 
 // Use centralized API base
-import { getApiBase } from "../src/lib/api";
-const API_BASE = getApiBase();
+import { API_URL } from "../src/lib/api";
 
 export default function HomePage() {
   const { address } = useWallet();
@@ -40,13 +39,13 @@ export default function HomePage() {
 
   useEffect(() => {
     // Backend health check (only once on mount)
-    fetch(`${API_BASE}/health`)
+      fetch(`${API_URL}/api/health`)
       .then((res) => (res.ok ? res.json() : { status: "error" }))
       .then((data) => setBackendStatus(data.status || "ok"))
       .catch(() => setBackendStatus("error"));
 
     // OpenRouter API health check (only once on mount, cached on backend)
-    fetch(`${API_BASE}/api/ai/health`)
+      fetch(`${API_URL}/api/ai/health`)
       .then((res) => res.json())
       .then((data) => {
         if (data.ok && data.status === "healthy") {

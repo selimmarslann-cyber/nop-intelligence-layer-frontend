@@ -1,7 +1,7 @@
 // components/BalancePill.tsx
 // NOP balance pill with auto-refresh (30s) and manual refresh
 import { useEffect, useState, useCallback } from "react";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 import { useWallet } from "../contexts/WalletContext";
 
 export default function BalancePill() {
@@ -20,7 +20,7 @@ export default function BalancePill() {
     setLoading(true);
     setError(false);
     try {
-      const r = await fetch(`${getApiBase()}/api/users/${address}/summary`);
+        const r = await fetch(`${API_URL}/api/users/${address}/summary`);
       if (!r.ok) throw new Error("Failed to fetch balance");
       const data = await r.json();
       setBalance(data.balance || "0");

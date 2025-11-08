@@ -1,9 +1,24 @@
-/**
- * Centralized API base URL management
- * Handles both SSR and CSR environments
- */
-export function getApiBase(): string {
-  const b = process.env.NEXT_PUBLIC_API_BASE?.trim();
-  return b && b.length ? b : (typeof window === 'undefined' ? 'http://localhost:5000' : 'http://localhost:5000');
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+
+export async function apiGet(p: string, i?: RequestInit) {
+  const r = await fetch(`${API_URL}${p}`, {
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    ...i,
+  });
+  if (!r.ok) throw new Error(`${r.status} ${p}`);
+  return r.json();
+}
+
+export async function apiPost(p: string, b: any, i?: RequestInit) {
+  const r = await fetch(`${API_URL}${p}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(b),
+    ...i,
+  });
+  if (!r.ok) throw new Error(`${r.status} ${p}`);
+  return r.json();
 }
 

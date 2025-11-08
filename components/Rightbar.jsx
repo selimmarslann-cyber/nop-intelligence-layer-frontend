@@ -7,7 +7,7 @@ import BurnCounter from './BurnCounter';
 import NewsPanel from './NewsPanel';
 import DepositModal from './wallet/DepositModal';
 import WithdrawModal from './wallet/WithdrawModal';
-import { getApiBase } from '../src/lib/api';
+import { API_URL } from '../src/lib/api';
 import { useWallet } from '../contexts/WalletContext';
 
 export default function Rightbar() {
@@ -25,7 +25,7 @@ export default function Rightbar() {
   useEffect(() => {
     async function fetchTrendUsers() {
       try {
-        const res = await fetch(`${getApiBase()}/api/explore/users?limit=5`);
+          const res = await fetch(`${API_URL}/api/explore/users?limit=5`);
         if (res.ok) {
           const data = await res.json();
           if (data.ok) {
@@ -61,7 +61,7 @@ export default function Rightbar() {
       }
       setWalletLoading(true);
       try {
-        const res = await fetch(`${getApiBase()}/api/users/${address}/summary`);
+          const res = await fetch(`${API_URL}/api/users/${address}/summary`);
         if (res.ok) {
           const data = await res.json();
           setWalletData({
@@ -85,7 +85,7 @@ export default function Rightbar() {
     if (!address || !stakeAmount || parseFloat(stakeAmount) <= 0) return;
     setStakeLoading(true);
     try {
-      const res = await fetch(`${getApiBase()}/api/stake`, {
+        const res = await fetch(`${API_URL}/api/stake`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address, amount: parseFloat(stakeAmount) }),
@@ -93,7 +93,7 @@ export default function Rightbar() {
       if (res.ok) {
         setStakeAmount('');
         // Refresh wallet data
-        const summaryRes = await fetch(`${getApiBase()}/api/users/${address}/summary`);
+          const summaryRes = await fetch(`${API_URL}/api/users/${address}/summary`);
         if (summaryRes.ok) {
           const data = await summaryRes.json();
           setWalletData({ balance: data.balance || '0', staked: data.staked || '0' });
@@ -111,7 +111,7 @@ export default function Rightbar() {
     if (!address || !unstakeAmount || parseFloat(unstakeAmount) <= 0) return;
     setStakeLoading(true);
     try {
-      const res = await fetch(`${getApiBase()}/api/unstake`, {
+        const res = await fetch(`${API_URL}/api/unstake`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address, amount: parseFloat(unstakeAmount) }),
@@ -119,7 +119,7 @@ export default function Rightbar() {
       if (res.ok) {
         setUnstakeAmount('');
         // Refresh wallet data
-        const summaryRes = await fetch(`${getApiBase()}/api/users/${address}/summary`);
+          const summaryRes = await fetch(`${API_URL}/api/users/${address}/summary`);
         if (summaryRes.ok) {
           const data = await summaryRes.json();
           setWalletData({ balance: data.balance || '0', staked: data.staked || '0' });
@@ -134,7 +134,7 @@ export default function Rightbar() {
 
   const handleWalletRefresh = () => {
     if (address) {
-      fetch(`${getApiBase()}/api/users/${address}/summary`)
+        fetch(`${API_URL}/api/users/${address}/summary`)
         .then(res => res.json())
         .then(data => {
           setWalletData({ balance: data.balance || '0', staked: data.staked || '0' });

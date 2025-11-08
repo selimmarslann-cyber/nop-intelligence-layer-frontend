@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { getApiBase } from '../src/lib/api';
+import { API_URL } from '../src/lib/api';
 
 type NewsItem = { title: string; url: string; image?: string; source?: string; publishedAt?: string; };
 
@@ -12,7 +12,7 @@ export default function NewsPanel({ limit = 4 }: { limit?: number }) {
 
   const load = async () => {
     try {
-      const res = await axios.get(`${getApiBase()}/api/news`, { params: { limit } });
+      const res = await axios.get(`${API_URL}/api/news`, { params: { limit } });
       setNews(res.data?.items || []);
     } catch (e) {
       console.error('NEWS_FETCH_ERROR', e);

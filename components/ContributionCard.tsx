@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 import { useWallet } from "../contexts/WalletContext";
 
 type Post = {
@@ -60,7 +60,7 @@ export default function ContributionCard({ post, voterId, onVote }: Contribution
   useEffect(() => {
     async function fetchStats() {
       try {
-        const res = await fetch(`${getApiBase()}/api/contribution/${post.id}/votes`);
+          const res = await fetch(`${API_URL}/api/contribution/${post.id}/votes`);
         if (res.ok) {
           const data = await res.json();
           if (data.ok && data.stats) {
@@ -88,7 +88,7 @@ export default function ContributionCard({ post, voterId, onVote }: Contribution
 
     setVoting(true);
     try {
-      const res = await fetch(`${getApiBase()}/api/contribution/${post.id}/vote`, {
+        const res = await fetch(`${API_URL}/api/contribution/${post.id}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ voterId, value: rating }),

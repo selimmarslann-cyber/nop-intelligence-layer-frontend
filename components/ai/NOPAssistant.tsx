@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { getApiBase } from "../../src/lib/api";
+import { API_URL } from "../../src/lib/api";
 
 type Message = {
   role: "user" | "assistant";
@@ -45,7 +45,7 @@ export default function NOPAssistant() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getApiBase()}/api/ai/chat`, {
+        const response = await fetch(`${API_URL}/api/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -338,7 +338,7 @@ export default function NOPAssistant() {
                     setMessages((prev) => [...prev, { role: "user", content: msg }]);
                     setLoading(true);
                     try {
-                      const response = await fetch(`${getApiBase()}/api/ai/chat`, {
+                        const response = await fetch(`${API_URL}/api/ai/chat`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -391,7 +391,7 @@ export default function NOPAssistant() {
                     setMessages((prev) => [...prev, { role: "user", content: msg }]);
                     setLoading(true);
                     try {
-                      const response = await fetch(`${getApiBase()}/api/ai/chat`, {
+                        const response = await fetch(`${API_URL}/api/ai/chat`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({

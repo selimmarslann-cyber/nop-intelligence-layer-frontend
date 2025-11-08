@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { getApiBase } from "../../src/lib/api";
+import { API_URL } from "../../src/lib/api";
 
 interface WithdrawModalProps {
   isOpen: boolean;
@@ -40,8 +40,7 @@ export default function WithdrawModal({ isOpen, onClose, userAddress, balance, o
     setSuccess("");
 
     try {
-      const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/api/withdraw`, {
+        const res = await fetch(`${API_URL}/api/withdraw`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

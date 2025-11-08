@@ -6,7 +6,7 @@ import Sidebar from '../components/Sidebar';
 import Rightbar from '../components/Rightbar';
 import PostCard from '../components/PostCard';
 import UserCard from '../components/UserCard';
-import { getApiBase } from '../src/lib/api';
+import { API_URL } from '../src/lib/api';
 import { searchPostsGROQ } from '../utils/sanity';   // <-- yeni import
 
 // ==================== Server‑Side Props ====================
@@ -47,7 +47,7 @@ export default function Explore({ initialList, initialQuery, initialTag }) {
       async function fetchUsers() {
         setLoadingUsers(true);
         try {
-          const res = await fetch(`${getApiBase()}/api/explore/users?limit=20`);
+            const res = await fetch(`${API_URL}/api/explore/users?limit=20`);
           if (res.ok) {
             const data = await res.json();
             if (data.ok && data.users && data.users.length > 0) {

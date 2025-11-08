@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 
 const EMOJIS = ["😀", "🚀", "🤖", "🧠", "📈", "🔥"];
 const MAX_LEN = 500;
@@ -57,7 +57,7 @@ export default function ContributionComposer({ authorId }: { authorId: string })
       fd.append("tags", tags);
       if (file) fd.append("image", file);
 
-      const res = await fetch(`${getApiBase()}/api/contribution`, { method: "POST", body: fd });
+      const res = await fetch(`${API_URL}/api/contribution`, { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok || !data?.ok) throw new Error(data?.error || "create_failed");
 

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { card, sectionTitle } from "./layout";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 export default function Trending(){
   const [tags, setTags] = useState<string[]>([]);
   useEffect(()=>{
-    (async()=>{ try{ const r=await fetch(`${getApiBase()}/api/trending?limit=12`); const d=await r.json(); setTags(d?.tags||[]);}catch{} })();
+    (async()=>{ try{ const r=await fetch(`${API_URL}/api/trending?limit=12`); const d=await r.json(); setTags(d?.tags||[]);}catch{} })();
   },[]);
   return (
     <div style={{...card, padding:12}}>

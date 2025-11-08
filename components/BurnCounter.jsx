@@ -1,7 +1,7 @@
 // components/BurnCounter.jsx
 // Burn Counter with barrel, flames, and flip-style 7-digit counter
 import { useEffect, useState } from "react";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 
 export default function BurnCounter() {
   const [total, setTotal] = useState("0");
@@ -17,7 +17,7 @@ export default function BurnCounter() {
 
   async function loadTotal() {
     try {
-      const r = await fetch(`${getApiBase()}/api/burns/total`).catch(() => null);
+      const r = await fetch(`${API_URL}/api/burns/total`).catch(() => null);
       if (r && r.ok) {
         const data = await r.json();
         const newTotal = data.total || "0";

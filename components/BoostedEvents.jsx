@@ -2,7 +2,7 @@
 // Boost Event - Task completion system
 "use client";
 import { useEffect, useState } from "react";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 import { useWallet } from "../contexts/WalletContext";
 
 const TASKS = [
@@ -49,7 +49,7 @@ export default function BoostedEvents() {
 
   async function loadTaskStatus() {
     try {
-      const r = await fetch(`${getApiBase()}/api/boost-tasks/status?address=${address}`);
+        const r = await fetch(`${API_URL}/api/boost-tasks/status?address=${address}`);
       if (r.ok) {
         const data = await r.json();
         setTaskStatus(data.tasks || {});
@@ -67,7 +67,7 @@ export default function BoostedEvents() {
 
     setClaiming(true);
     try {
-      const r = await fetch(`${getApiBase()}/api/boost-tasks/claim`, {
+        const r = await fetch(`${API_URL}/api/boost-tasks/claim`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address }),

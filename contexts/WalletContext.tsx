@@ -3,6 +3,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
+import { API_URL } from "../src/lib/api";
 
 type WalletProvider = "metamask" | "trustwallet" | "coinbase" | "email" | null;
 
@@ -123,9 +124,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         // Register with referral code if provided
         if (referralCode) {
           try {
-            const { getApiBase } = await import("../src/lib/api");
-            const apiBase = getApiBase();
-            await fetch(`${apiBase}/api/referral/register`, {
+            await fetch(`${API_URL}/api/referral/register`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -162,24 +161,22 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(STORAGE_KEY, account);
       localStorage.setItem(STORAGE_PROVIDER_KEY, providerType);
 
-      // Register with referral code if provided
-      if (referralCode) {
-        try {
-          const { getApiBase } = await import("../src/lib/api");
-          const apiBase = getApiBase();
-          await fetch(`${apiBase}/api/referral/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              address: account,
-              referralCode: referralCode.toUpperCase(),
-            }),
-          });
-        } catch (refError) {
-          console.error("Referral registration failed:", refError);
-          // Don't throw - connection succeeded, referral is optional
+        // Register with referral code if provided
+        if (referralCode) {
+          try {
+            await fetch(`${API_URL}/api/referral/register`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                address: account,
+                referralCode: referralCode.toUpperCase(),
+              }),
+            });
+          } catch (refError) {
+            console.error("Referral registration failed:", refError);
+            // Don't throw - connection succeeded, referral is optional
+          }
         }
-      }
     } catch (error: any) {
       console.error("Wallet connection error:", error);
       throw error;

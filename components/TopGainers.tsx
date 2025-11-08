@@ -1,6 +1,6 @@
 // components/TopGainers.tsx
 import { useEffect, useState } from "react";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 
 type Gainer = {
   symbol: string;
@@ -15,8 +15,7 @@ export default function TopGainers() {
   useEffect(() => {
     async function fetchTopGainers() {
       try {
-        const apiBase = getApiBase();
-        const url = `${apiBase}/api/top-gainers`;
+          const url = `${API_URL}/api/top-gainers`;
         console.log('[TopGainers] Fetching from:', url);
         
         const r = await fetch(url, {

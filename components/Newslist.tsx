@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { card, sectionTitle } from "./layout";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 type News = { title:string; link:string; source:string; isoDate?:string };
 
 export default function NewsList(){
   const [items,setItems] = useState<News[]>([]);
   useEffect(()=>{
     (async()=>{
-      try{ const r=await fetch(`${getApiBase()}/api/news?limit=12`); const d=await r.json(); setItems(d?.items||[]); }catch{}
+      try{ const r=await fetch(`${API_URL}/api/news?limit=12`); const d=await r.json(); setItems(d?.items||[]); }catch{}
     })();
   },[]);
   return (

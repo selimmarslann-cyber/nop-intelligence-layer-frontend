@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 import ContributionCard from "./ContributionCard";
 import { useWallet } from "../contexts/WalletContext";
 
@@ -25,8 +25,7 @@ export default function ContributionFeed() {
       qs.set("take","10"); 
       if (!reset && cursor) qs.set("cursor", cursor);
       
-      const apiBase = getApiBase();
-      const url = `${apiBase}/api/feed?${qs.toString()}`;
+        const url = `${API_URL}/api/feed?${qs.toString()}`;
       
       console.log("[Feed] Fetching from:", url);
       

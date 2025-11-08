@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getApiBase } from "../src/lib/api";
+import { API_URL } from "../src/lib/api";
 import FollowConfirmModal from "./FollowConfirmModal";
 
 interface FollowButtonProps {
@@ -28,6 +28,18 @@ export default function FollowButton({
 
   const FOLLOW_COST = 50000; // 50,000 NOP
 
+  const parseBalanceValue = (value: unknown) => {
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : 0;
+    }
+    if (typeof value === "string") {
+      const normalized = value.replace(/[^0-9.-]/g, "");
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+    return 0;
+  };
+
   // Check follow status
   useEffect(() => {
     if (!currentUserAddress || !targetAddress) {
@@ -38,7 +50,7 @@ export default function FollowButton({
     async function checkStatus() {
       try {
         const res = await fetch(
-          `${getApiBase()}/api/follow/status/${targetAddress}?followerAddress=${currentUserAddress}`
+          `${API_URL}/api/follow/status/${targetAddress}?followerAddress=${currentUserAddress}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -60,10 +72,10 @@ export default function FollowButton({
 
     async function fetchBalance() {
       try {
-        const res = await fetch(`${getApiBase()}/api/users/${currentUserAddress}/summary`);
+        const res = await fetch(`${API_URL}/api/users/${currentUserAddress}/summary`);
         if (res.ok) {
           const data = await res.json();
-          setBalance(parseInt(data.balance || "0", 10));
+          setBalance(parseBalanceValue(data.balance));
         }
       } catch (error) {
         console.error("Balance fetch error:", error);
@@ -86,7 +98,7 @@ export default function FollowButton({
 
     setLoading(true);
     try {
-      const res = await fetch(`${getApiBase()}/api/follow/${targetAddress}`, {
+      const res = await fetch(`${API_URL}/api/follow/${targetAddress}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ followerAddress: currentUserAddress }),
@@ -97,7 +109,7 @@ export default function FollowButton({
       if (data.ok) {
         setIsFollowing(true);
         setShowConfirm(false);
-        setBalance(parseInt(data.newBalance || "0", 10));
+        setBalance(parseBalanceValue(data.newBalance));
         onFollowChange?.(true);
       } else {
         alert(data.error || "Takip işlemi başarısız");
@@ -115,7 +127,7 @@ export default function FollowButton({
 
     setLoading(true);
     try {
-      const res = await fetch(`${getApiBase()}/api/unfollow/${targetAddress}`, {
+        const res = await fetch(`${API_URL}/api/unfollow/${targetAddress}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ followerAddress: currentUserAddress }),

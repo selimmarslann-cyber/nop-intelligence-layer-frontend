@@ -7,9 +7,7 @@ import StakePanel from "../components/wallet/StakePanel";
 import DepositModal from "../components/wallet/DepositModal";
 import WithdrawModal from "../components/wallet/WithdrawModal";
 import { useWallet } from "../contexts/WalletContext";
-import { getApiBase } from "../src/lib/api";
-
-const API_BASE = getApiBase();
+import { API_URL } from "../src/lib/api";
 
 export default function WalletPage() {
   const { address, isConnected } = useWallet();
@@ -37,7 +35,7 @@ export default function WalletPage() {
     setLoading(true);
     setErr("");
     try {
-      const r = await fetch(`${API_BASE}/api/users/${address}/summary`);
+        const r = await fetch(`${API_URL}/api/users/${address}/summary`);
       if (!r.ok) throw new Error(await r.text());
       const d = await r.json();
       setData(d);
@@ -53,7 +51,7 @@ export default function WalletPage() {
     if (!address) return;
     setWithdrawalsLoading(true);
     try {
-      const r = await fetch(`${API_BASE}/api/users/${address}/withdrawals`);
+        const r = await fetch(`${API_URL}/api/users/${address}/withdrawals`);
       if (!r.ok) throw new Error("Failed to load withdrawals");
       const d = await r.json();
       setWithdrawals(d.items || []);

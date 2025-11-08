@@ -36,6 +36,16 @@ app.get('/db-ping', async (_, reply) => {
   }
 });
 
+app.get('/api/health', async () => ({
+  ok: true,
+  ts: Date.now(),
+}));
+
+app.get('/api/version', async () => ({
+  commit: process.env.RENDER_GIT_COMMIT || 'unknown',
+  ts: Date.now(),
+}));
+
 const port = Number(process.env.PORT || 5000);
 const host = process.env.HOST || '0.0.0.0';
 
@@ -170,10 +180,13 @@ async function startServer(startPort: number): Promise<void> {
 }
 
 async function bootstrap(): Promise<void> {
-  const origins = process.env.ALLOW_ORIGIN?.split(',').map((s) => s.trim()).filter(Boolean);
-
   await app.register(cors, {
-    origin: origins && origins.length > 0 ? origins : true,
+    origin: [
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+      'https://<SENIN-FRONTEND>.onrender.com',
+    ],
+    credentials: true,
   });
 
   await startServer(port);
